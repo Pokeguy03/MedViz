@@ -1,0 +1,1959 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dose Viz - Fun Medicine Learning!</title>
+    <style>
+        /* Root Variables */
+        :root {
+            --primary-color: #FF6B6B;
+            --secondary-color: #4ECDC4;
+            --accent-color: #FFE66D;
+            --background-color: #f7f9fc;
+            --text-color: #2C3E50;
+        }
+
+        /* Animation Keyframes */
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Base Styles */
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .floating-pills {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        .pill-1 {
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .pill-2 {
+            top: 20%;
+            right: 10%;
+            animation-delay: 1s;
+        }
+
+        .pill-3 {
+            bottom: 15%;
+            left: 15%;
+            animation-delay: 2s;
+        }
+
+        .pill-4 {
+            bottom: 25%;
+            right: 15%;
+            animation-delay: 3s;
+        }
+
+        .header {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            border-radius: 0 0 50% 50% / 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .search-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin: -50px auto 30px;
+            max-width: 800px;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin: auto;
+        }
+
+        input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: 3px solid var(--secondary-color);
+            border-radius: 25px;
+            font-size: 1.2rem;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(78, 205, 196, 0.2);
+        }
+
+        button {
+            padding: 1rem 2rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-family: inherit;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .info-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+        }
+
+        .info-card:hover::before {
+            animation: rotate 2s linear infinite;
+        }
+
+        .tablet-info {
+            background: white;
+            padding: 2rem;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+            animation: bounce 1s ease-out;
+        }
+
+        .video-container {
+            margin-top: 1.5rem;
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-container video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .search-bar {
+                flex-direction: column;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .main-nav {
+            margin-top: 20px;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-btn.active {
+            background: white;
+            color: var(--primary-color);
+        }
+
+        .home-section {
+            padding: 2rem 0;
+        }
+
+        .welcome-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 30px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .mascot img {
+            width: 200px;
+            height: 200px;
+        }
+
+        .bounce-animation {
+            animation: bounce 2s infinite;
+        }
+
+        .interactive-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-glow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .feature-card:hover .card-glow {
+            opacity: 1;
+        }
+
+        .fun-facts-carousel {
+            position: relative;
+            background: white;
+            padding: 2rem;
+            border-radius: 30px;
+            margin-top: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .fact-card {
+            display: none;
+            text-align: center;
+        }
+
+        .fact-card.current {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .carousel-btn.prev {
+            left: 20px;
+        }
+
+        .carousel-btn.next {
+            right: 20px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .funfacts-section {
+            padding: 2rem 0;
+        }
+
+        .facts-container {
+            display: grid;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .fact-category {
+            background: white;
+            padding: 2rem;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .fact-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .flip-card {
+            background-color: transparent;
+            height: 200px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front,
+        .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .flip-card-front {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .flip-card-back {
+            background: var(--accent-color);
+            color: var(--text-color);
+            transform: rotateY(180deg);
+        }
+
+        .did-you-know {
+            background: white;
+            padding: 2rem;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .fun-fact-slider {
+            position: relative;
+            height: 100px;
+            overflow: hidden;
+        }
+
+        .fact-slide {
+            position: absolute;
+            width: 100%;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .fact-slide.active {
+            opacity: 1;
+        }
+
+        .slider-dots {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .slider-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            opacity: 0.3;
+            cursor: pointer;
+        }
+
+        .slider-dot.active {
+            opacity: 1;
+        }
+
+        .learn-more-btn {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .glow-button {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            animation: glow 2s infinite;
+        }
+
+        .glow-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 5px rgba(255, 107, 107, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 0 20px rgba(255, 107, 107, 0.8);
+            }
+        }
+
+        .fun-facts-carousel {
+            position: relative;
+            padding-bottom: 60px;
+        }
+
+        .labstories-section {
+            padding: 2rem 0;
+        }
+
+        .lab-process-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .process-step {
+            background: white;
+            border-radius: 30px;
+            padding: 2rem;
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .process-step:hover {
+            transform: translateY(-5px);
+        }
+
+        .step-number {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .lab-animation {
+            height: 100px;
+            position: relative;
+            margin-top: 1rem;
+        }
+
+        .floating-leaf,
+        .floating-crystal {
+            position: absolute;
+            font-size: 2rem;
+            animation: float 3s infinite ease-in-out;
+        }
+
+        .floating-crystal {
+            left: 60px;
+            animation-delay: 1.5s;
+        }
+
+        .bubbling-potion {
+            position: relative;
+            font-size: 2rem;
+        }
+
+        .bubble {
+            position: absolute;
+            animation: rise 2s infinite;
+            opacity: 0.6;
+        }
+
+        .bubble:nth-child(2) {
+            animation-delay: 1s;
+            left: 20px;
+        }
+
+        .conveyor-belt {
+            display: flex;
+            gap: 1rem;
+            animation: slide 4s infinite linear;
+        }
+
+        .lab-facts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .lab-fact-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .lab-fact-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .fact-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes rise {
+            0% {
+                transform: translateY(0);
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: translateY(-40px);
+                opacity: 0;
+            }
+        }
+
+        @keyframes slide {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .process-step {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        .medicine-categories {
+            margin-top: 2rem;
+            background: white;
+            padding: 2rem;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .medicine-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .medicine-card {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .medicine-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .medicine-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.2),
+                    transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+        }
+
+        .medicine-card:hover::before {
+            animation: shine 1.5s infinite;
+        }
+
+        .medicine-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .medicine-card h4 {
+            margin: 0.5rem 0;
+            font-size: 1.2rem;
+        }
+
+        .medicine-card p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        @keyframes shine {
+            0% {
+                transform: translateX(-100%) rotate(45deg);
+            }
+
+            100% {
+                transform: translateX(100%) rotate(45deg);
+            }
+        }
+
+        .medicine-processes {
+            background: white;
+            padding: 2rem;
+            border-radius: 30px;
+            margin-top: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .medicine-process-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 2rem 0;
+            justify-content: center;
+        }
+
+        .process-btn {
+            background: var(--background-color);
+            border: 2px solid var(--primary-color);
+            padding: 0.8rem 1.5rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            color: var(--text-color);
+        }
+
+        .process-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .process-btn.active {
+            background: var(--primary-color);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .process-details {
+            padding: 2rem;
+            background: var(--background-color);
+            border-radius: 20px;
+            margin-top: 1rem;
+        }
+
+        .process-step-special {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1rem 0;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+
+        .process-step-special:hover {
+            transform: translateX(10px);
+        }
+
+        .step-icon {
+            font-size: 2rem;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .bodyheroes-section {
+            padding: 2rem 0;
+        }
+
+        .heroes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .hero-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            animation: float 3s infinite ease-in-out;
+        }
+
+        .hero-title {
+            color: var(--primary-color);
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+
+        .hero-powers {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+            margin-top: 1rem;
+        }
+
+        .hero-powers li {
+            margin: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .hero-interactive {
+            background: white;
+            padding: 2rem;
+            border-radius: 30px;
+            margin-top: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .action-btn {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero-animation {
+            height: 300px;
+            background: var(--background-color);
+            border-radius: 20px;
+            margin-top: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--background-color);
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .medicine-info-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-section {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: var(--background-color);
+            border-radius: 15px;
+        }
+
+        .safety-note {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #fff3cd;
+            border-radius: 15px;
+            border: 2px solid var(--accent-color);
+        }
+
+        .not-found-card,
+        .error-card {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .animation-section {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .animation-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .animation-container canvas {
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .ai-image-section {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .ai-generated-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-caption {
+            margin-top: 1rem;
+            color: #666;
+            font-style: italic;
+        }
+
+        .image-loading {
+            text-align: center;
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .ai-generated-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .ai-generated-image:hover {
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="floating-pills pill-1"></div>
+    <div class="floating-pills pill-2"></div>
+    <div class="floating-pills pill-3"></div>
+    <div class="floating-pills pill-4"></div>
+
+    <header class="header">
+        <div class="container">
+            <h1>🌟 Dose Viz 🌟</h1>
+            <p>Let's Learn About Medicine Together!</p>
+            <nav class="main-nav">
+                <button class="nav-btn active" onclick="showSection('home')">🏠 Home</button>
+                <button class="nav-btn" onclick="showSection('search')">🔍 Find Medicine</button>
+                <button class="nav-btn" onclick="showSection('funfacts')">🎯 Fun Facts</button>
+                <button class="nav-btn" onclick="showSection('labstories')">🧪 Lab Stories</button>
+                <button class="nav-btn" onclick="showSection('bodyheroes')">🦸‍♂️ Body Heroes</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section id="home" class="home-section">
+            <div class="welcome-card">
+                <h2>👋 Welcome to MediMagic!</h2>
+                <p>Hey there, young scientist! Ready to discover the amazing world of medicines?</p>
+                <!-- <div class="mascot">
+                    <img src="https://example.com/mascot.png" alt="Dr. MediMagic" class="bounce-animation">
+                </div> -->
+            </div>
+
+            <div class="interactive-grid">
+                <div class="feature-card" onclick="showSection('search')">
+                    <div class="card-icon">💊</div>
+                    <h3>Medicine Explorer</h3>
+                    <p>Search and learn about different medicines!</p>
+                    <div class="card-glow"></div>
+                </div>
+
+                <div class="feature-card" onclick="showSection('funfacts')">
+                    <div class="card-icon">🎮</div>
+                    <h3>Fun Facts</h3>
+                    <p>Discover amazing facts about your body and medicines!</p>
+                    <div class="card-glow"></div>
+                </div>
+
+                <div class="feature-card" onclick="showSection('labstories')">
+                    <div class="card-icon">🧪</div>
+                    <h3>Lab Stories</h3>
+                    <p>Discover how medicines are made!</p>
+                    <div class="card-glow"></div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="card-icon">🦸‍♂️</div>
+                    <h3>Body Heroes</h3>
+                    <p>Meet the superheroes inside your body!</p>
+                    <div class="card-glow"></div>
+                </div>
+            </div>
+
+            <div class="fun-facts-carousel">
+                <div class="fact-card current">
+                    <h3>🧠 Brain Power!</h3>
+                    <p>Your brain can generate enough electricity to power a small light bulb! 💡</p>
+                </div>
+                <div class="fact-card">
+                    <h3>❤️ Heart Facts!</h3>
+                    <p>Your heart beats about 100,000 times every day! That's like a drum playing non-stop! 🥁</p>
+                </div>
+                <div class="fact-card">
+                    <h3>🦠 Antibiotic Action!</h3>
+                    <p>Antibiotics are like tiny superheroes that fight bad bacteria in your body! 🦸‍♂️</p>
+                </div>
+                <div class="fact-card">
+                    <h3>🌟 Fun Fact!</h3>
+                    <p>Your body has about 37 trillion cells! That's more than all the stars in our galaxy! ⭐</p>
+                </div>
+                <button class="carousel-btn prev" onclick="prevFact()">←</button>
+                <button class="carousel-btn next" onclick="nextFact()">→</button>
+                <div class="learn-more-btn">
+                    <button onclick="showSection('funfacts')" class="glow-button">Learn More Fun Facts! ✨</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="search" class="search-section hidden">
+            <h2>✨ Find Your Medicine ✨</h2>
+            <div class="search-bar">
+                <input type="text" id="searchBox" placeholder="Type a medicine name...">
+                <button onclick="searchTablet()">🔍 Search</button>
+            </div>
+            <div id="tabletInfo" class="hidden"></div>
+        </section>
+
+        <div class="content-grid">
+            <div class="info-card">
+                <h3>🎮 Fun Learning</h3>
+                <p>Watch cool 3D animations of how medicines help your body feel better!</p>
+            </div>
+            <div class="info-card">
+                <h3>🛡️ Stay Safe</h3>
+                <p>Learn the right way to take medicines and keep yourself healthy!</p>
+            </div>
+            <div class="info-card">
+                <h3>🧪 Magic of Medicine</h3>
+                <p>Discover amazing facts about how medicines work like magic in your body!</p>
+            </div>
+        </div>
+
+        <section id="funfacts" class="funfacts-section hidden">
+            <div class="welcome-card">
+                <h2>🌟 Amazing Body Facts! 🌟</h2>
+                <p>Discover incredible things about your body and how medicines help it!</p>
+            </div>
+
+            <div class="facts-container">
+                <div class="fact-category">
+                    <h3>👊 Your Amazing Body</h3>
+                    <div class="fact-cards">
+                        <div class="flip-card">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <div class="card-icon">🧠</div>
+                                    <p>Tap to learn about your Brain!</p>
+                                </div>
+                                <div class="flip-card-back">
+                                    <h4>Brain Power!</h4>
+                                    <p>Your brain can generate enough electricity to power a small light bulb! 💡</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flip-card">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <div class="card-icon">❤️</div>
+                                    <p>Tap to learn about your Heart!</p>
+                                </div>
+                                <div class="flip-card-back">
+                                    <h4>Heart Facts!</h4>
+                                    <p>Your heart beats about 100,000 times every day! That's like a drum playing
+                                        non-stop! 🥁</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fact-category">
+                    <h3>💊 Medicine Magic</h3>
+                    <div class="fact-cards">
+                        <div class="flip-card">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <div class="card-icon">🦠</div>
+                                    <p>Tap to learn about Antibiotics!</p>
+                                </div>
+                                <div class="flip-card-back">
+                                    <h4>Antibiotic Action!</h4>
+                                    <p>Antibiotics are like tiny superheroes that fight bad bacteria in your body! 🦸‍♂️
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flip-card">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <div class="card-icon">🛡️</div>
+                                    <p>Tap to learn about Vaccines!</p>
+                                </div>
+                                <div class="flip-card-back">
+                                    <h4>Vaccine Power!</h4>
+                                    <p>Vaccines train your body's army to fight diseases, just like a superhero training
+                                        camp! 💪</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="did-you-know">
+                    <h3>🤔 Did You Know?</h3>
+                    <div class="fun-fact-slider">
+                        <div class="fact-slide">
+                            <p>Your body has about 37 trillion cells! That's more than all the stars in our galaxy! ⭐
+                            </p>
+                        </div>
+                        <div class="fact-slide">
+                            <p>Your nose can remember 50,000 different scents! You're like a super-sniffer! 👃</p>
+                        </div>
+                        <div class="fact-slide">
+                            <p>Your fingernails grow faster on your dominant hand! Race time! 🏃‍♂️</p>
+                        </div>
+                    </div>
+                    <div class="slider-dots"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="labstories" class="labstories-section hidden">
+            <div class="welcome-card">
+                <h2>🧪 Welcome to the Magic Lab! 🔬</h2>
+                <p>Let's discover how scientists make medicines to keep us healthy!</p>
+            </div>
+
+            <div class="lab-process-container">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>🌿 Finding Nature's Secrets</h3>
+                        <p>Scientists look for special ingredients in plants, minerals, and sometimes create new ones in
+                            the lab!</p>
+                        <div class="lab-animation">
+                            <div class="floating-leaf">🌿</div>
+                            <div class="floating-crystal">💎</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>🧪 Testing Magic Potions</h3>
+                        <p>Like master wizards, scientists mix different ingredients to make the perfect medicine!</p>
+                        <div class="lab-animation">
+                            <div class="bubbling-potion">
+                                <span>⚗️</span>
+                                <div class="bubble">○</div>
+                                <div class="bubble">○</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>🔬 Super Safety Check</h3>
+                        <p>Scientists make sure the medicine is safe by doing lots of careful tests!</p>
+                        <div class="lab-animation">
+                            <div class="microscope">🔬</div>
+                            <div class="safety-shield">🛡️</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>💊 Making Medicine Magic</h3>
+                        <p>Special machines turn the tested ingredients into tablets, syrups, or other forms!</p>
+                        <div class="lab-animation">
+                            <div class="conveyor-belt">
+                                <span>💊</span>
+                                <span>💊</span>
+                                <span>💊</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fun-lab-facts">
+                <h3>🏭 Cool Lab Facts!</h3>
+                <div class="lab-facts-grid">
+                    <div class="lab-fact-card">
+                        <div class="fact-icon">⏰</div>
+                        <p>It can take 10-15 years to make a new medicine!</p>
+                    </div>
+                    <div class="lab-fact-card">
+                        <div class="fact-icon">🔍</div>
+                        <p>Scientists test thousands of ingredients to find one that works!</p>
+                    </div>
+                    <div class="lab-fact-card">
+                        <div class="fact-icon">🌡️</div>
+                        <p>Some medicines need to be kept cold like ice cream!</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="medicine-processes">
+                <h3>🏭 How Your Medicines Are Made</h3>
+
+                <div class="medicine-process-selector">
+                    <button class="process-btn active" onclick="showProcess('paracetamol')">Paracetamol</button>
+                    <button class="process-btn" onclick="showProcess('vitamin_c')">Vitamin C</button>
+                    <button class="process-btn" onclick="showProcess('zinc')">Zinc</button>
+                    <button class="process-btn" onclick="showProcess('probiotics')">Probiotics</button>
+                    <button class="process-btn" onclick="showProcess('iron')">Iron</button>
+                    <button class="process-btn" onclick="showProcess('calcium')">Calcium</button>
+                    <button class="process-btn" onclick="showProcess('multivitamin')">Multivitamin</button>
+                    <button class="process-btn" onclick="showProcess('omega3')">Omega-3</button>
+                    <button class="process-btn" onclick="showProcess('vitamin_d')">Vitamin D</button>
+                    <button class="process-btn" onclick="showProcess('magnesium')">Magnesium</button>
+                </div>
+
+                <div id="medicineProcesses" class="process-details">
+                    <!-- Process details will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+        <section id="bodyheroes" class="bodyheroes-section hidden">
+            <div class="welcome-card">
+                <h2>🦸‍♂️ Meet Your Body's Superhero Team! 🦸‍♀️</h2>
+                <p>Discover the amazing defenders that keep you healthy every day!</p>
+            </div>
+
+            <div class="heroes-grid">
+                <div class="hero-card">
+                    <div class="hero-icon">🩸</div>
+                    <h3>White Blood Cells</h3>
+                    <p class="hero-title">The Mighty Defenders</p>
+                    <div class="hero-details">
+                        <p>These tiny warriors fight off germs and keep you healthy!</p>
+                        <ul class="hero-powers">
+                            <li>🛡️ Creates protective barriers</li>
+                            <li>⚔️ Battles bad bacteria</li>
+                            <li>🔍 Spots invading germs</li>
+                            <li>💪 Remembers past battles</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="hero-card">
+                    <div class="hero-icon">❤️</div>
+                    <h3>Heart</h3>
+                    <p class="hero-title">The Tireless Pump</p>
+                    <div class="hero-details">
+                        <p>Your heart is like a super-powered engine that never stops!</p>
+                        <ul class="hero-powers">
+                            <li>⚡ Beats 100,000 times daily</li>
+                            <li>🌊 Pumps blood everywhere</li>
+                            <li>💪 Strongest muscle ever</li>
+                            <li>🏃‍♂️ Never takes a break</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="hero-card">
+                    <div class="hero-icon">🧠</div>
+                    <h3>Brain</h3>
+                    <p class="hero-title">The Master Controller</p>
+                    <div class="hero-details">
+                        <p>Your brain is like a super-computer that runs everything!</p>
+                        <ul class="hero-powers">
+                            <li>💭 Controls all thoughts</li>
+                            <li>📝 Stores memories</li>
+                            <li>🎮 Controls movement</li>
+                            <li>😴 Processes dreams</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="hero-card">
+                    <div class="hero-icon">🦴</div>
+                    <h3>Bones</h3>
+                    <p class="hero-title">The Living Armor</p>
+                    <div class="hero-details">
+                        <p>Your skeleton is like a living suit of armor!</p>
+                        <ul class="hero-powers">
+                            <li>🛡️ Protects organs</li>
+                            <li>📏 Helps you grow</li>
+                            <li>🏗️ Stores minerals</li>
+                            <li>🩹 Can repair itself</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-interactive">
+                <h3>🎮 Play with Your Body Heroes!</h3>
+                <div class="hero-actions">
+                    <button class="action-btn" onclick="showHeroPower('immune')">
+                        Watch Immune System in Action
+                    </button>
+                    <button class="action-btn" onclick="showHeroPower('digestion')">
+                        See Digestion Heroes
+                    </button>
+                    <button class="action-btn" onclick="showHeroPower('healing')">
+                        View Healing Powers
+                    </button>
+                </div>
+                <div id="heroAnimation" class="hero-animation">
+                    <!-- Animation content will be loaded here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://www.gstatic.com/ai/generativelanguage/v1beta/js/cloud-ai-language-sdk.min.js"></script>
+
+    <script>
+        async function fetchMedicineFromGemini(medicineName) {
+            // Replace this with your actual Google Gemini API Key from https://aistudio.google.com/
+            const API_KEY = 'AIzaSyCuHu1Y01dYhpkfnSbAJl_AjEnbxxXcSEo';
+            const API_ENDPOINT = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+
+            try {
+                console.log('Sending request to Gemini...', { medicineName });
+                const response = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: `Act as a medical expert explaining medicine to children.
+                                
+                                Provide detailed information about "${medicineName}" in this exact format:
+                                
+                                Name: [Full medicine name]
+                                Description: [A simple, child-friendly description of what this medicine is]
+                                How it works: [Explain the mechanism in simple terms with fun analogies]
+                                Common Uses: [List 2-3 main uses in simple terms]
+                                Typical Dosage: [Basic guidelines - remind to ask doctor/parents]
+                                Safety Notes: [2-3 important safety points for parents and children]
+                                
+                                Keep all explanations simple, friendly, and easy for children to understand.`
+                            }]
+                        }]
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.text();
+                    console.error('API Error Response:', errorData);
+                    throw new Error(`API request failed: ${response.status} - ${errorData}`);
+                }
+
+                const data = await response.json();
+                console.log('Gemini Response:', data);
+
+                if (data.candidates &&
+                    data.candidates[0] &&
+                    data.candidates[0].content &&
+                    data.candidates[0].content.parts &&
+                    data.candidates[0].content.parts[0]) {
+                    return data.candidates[0].content.parts[0].text;
+                } else {
+                    throw new Error('Invalid response format from Gemini');
+                }
+            } catch (error) {
+                console.error('Gemini API error:', error);
+                throw error;
+            }
+        }
+
+        async function generateMedicineImage(medicineName, medicineInfo) {
+            // Replace this with your actual OpenAI API Key from https://platform.openai.com/
+            const OPENAI_API_KEY = 'YOUR_OPENAI_API_KEY';
+
+            try {
+                // Create a detailed, child-friendly prompt
+                const prompt = `Create a child-friendly, educational illustration of ${medicineName}.
+                    Requirements:
+                    - Style: Colorful, cartoon-like, Disney/Pixar style
+                    - Content: Show the medicine and how it works in the body
+                    - Include: Friendly characters representing the medicine and body cells
+                    - Mood: Positive, reassuring, and engaging
+                    - Colors: Bright, cheerful colors
+                    - Must be suitable for children's medical education
+                    - No scary or clinical elements
+                    - Include simple visual metaphors to explain the medicine's function`;
+
+                const response = await fetch('https://api.openai.com/v1/images/generations', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${OPENAI_API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: "dall-e-3",
+                        prompt: prompt,
+                        n: 1,
+                        size: "1024x1024",
+                        quality: "standard",
+                        style: "vivid"
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('DALL-E API Error:', errorData);
+                    throw new Error('Failed to generate image');
+                }
+
+                const data = await response.json();
+                console.log('DALL-E Response:', data);
+                return data.data[0].url;
+
+            } catch (error) {
+                console.error('Image generation error:', error);
+                return null;
+            }
+        }
+
+        async function searchTablet() {
+            const searchTerm = document.getElementById('searchBox').value.trim();
+            const infoDiv = document.getElementById('tabletInfo');
+
+            if (!searchTerm) {
+                infoDiv.innerHTML = `
+                    <div class="error-card">
+                        <h2>Please enter a medicine name! 🔍</h2>
+                        <p>Try searching for medicines like "paracetamol" or "vitamin c"</p>
+                    </div>
+            `;
+                infoDiv.classList.remove("hidden");
+                return;
+            }
+
+            // Show loading state
+            infoDiv.innerHTML = `
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p>🔍 Looking up medicine information...</p>
+                </div>
+            `;
+            infoDiv.classList.remove("hidden");
+
+            try {
+                // Get medicine info from Gemini
+                const medicineInfo = await fetchMedicineFromGemini(searchTerm);
+                // Generate AI image
+                const imageUrl = await generateMedicineImage(searchTerm, medicineInfo);
+
+                if (medicineInfo) {
+                    const formattedResponse = formatGeminiResponse(medicineInfo);
+                    infoDiv.innerHTML = `
+                        <div class="medicine-info-card">
+                            ${formattedResponse}
+                            ${imageUrl ? `
+                                <div class="ai-image-section">
+                                    <h3>🎨 AI-Generated Illustration</h3>
+                                    <div class="image-container">
+                                        <img src="${imageUrl}" alt="${searchTerm} illustration" 
+                                             class="ai-generated-image">
+                                        <p class="image-caption">AI-generated educational illustration of ${searchTerm}</p>
+                                    </div>
+                                </div>
+                            ` : ''}
+                            <div class="safety-note">
+                                <p>⚠️ Remember: Always talk to a grown-up before taking any medicine!</p>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    displayNotFound(infoDiv);
+                }
+            } catch (error) {
+                console.error('Search error:', error);
+                infoDiv.innerHTML = `
+                    <div class="error-card">
+                        <h2>Oops! Something went wrong 😅</h2>
+                        <p>Please try again in a moment!</p>
+                        <p class="error-details">Error: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function formatGeminiResponse(response) {
+            try {
+                // Split response into lines and format them
+                const lines = response.split('\n');
+                let html = '';
+
+                lines.forEach(line => {
+                    if (line.trim()) {
+                        const [key, ...valueParts] = line.split(':');
+                        const value = valueParts.join(':').trim(); // Rejoin in case value contains colons
+
+                        if (key && value) {
+                            const cleanKey = key.trim();
+                            html += `
+                                <div class="info-section">
+                                    <h3>${getEmojiForSection(cleanKey)} ${cleanKey}</h3>
+                                    <p>${value}</p>
+                                </div>
+                            `;
+                        }
+                    }
+                });
+
+                return html || '<p>No information available</p>';
+            } catch (error) {
+                console.error('Error formatting response:', error);
+                return '<p>Error formatting medicine information</p>';
+            }
+        }
+
+        function getEmojiForSection(section) {
+            const emojiMap = {
+                'Name': '💊',
+                'Description': '📝',
+                'How it works': '⚡',
+                'Common Uses': '🎯',
+                'Typical Dosage': '⚖️',
+                'Safety Notes': '🛡️'
+            };
+            return emojiMap[section] || '✨';
+        }
+
+        function displayNotFound(infoDiv) {
+            infoDiv.innerHTML = `
+                <div class="not-found-card">
+                    <h2>Oops! 🔍</h2>
+                    <p>We couldn't find that medicine. Try:</p>
+                    <ul>
+                        <li>Checking the spelling</li>
+                        <li>Using a different name for the medicine</li>
+                        <li>Searching for one of our known medicines</li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('section').forEach(section => {
+                section.classList.add('hidden');
+            });
+
+            // Show selected section
+            document.getElementById(sectionId).classList.remove('hidden');
+
+            // Update navigation buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.toLowerCase().includes(sectionId)) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Hide tablet info when not in search section
+            const tabletInfo = document.getElementById('tabletInfo');
+            if (sectionId !== 'search' && tabletInfo) {
+                tabletInfo.classList.add('hidden');
+                // Clear search box if it exists
+                const searchBox = document.getElementById('searchBox');
+                if (searchBox) {
+                    searchBox.value = '';
+                }
+            }
+
+            // Scroll to top with smooth behavior
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        let currentFact = 0;
+        const facts = document.querySelectorAll('.fact-card');
+
+        function showFact(index) {
+            facts.forEach(fact => fact.classList.remove('current'));
+            facts[index].classList.add('current');
+        }
+
+        function nextFact() {
+            currentFact = (currentFact + 1) % facts.length;
+            showFact(currentFact);
+        }
+
+        function prevFact() {
+            currentFact = (currentFact - 1 + facts.length) % facts.length;
+            showFact(currentFact);
+        }
+
+        setInterval(nextFact, 5000);
+
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.fact-slide');
+        const dots = document.querySelector('.slider-dots');
+
+        slides.forEach((_, index) => {
+            const dot = document.createElement('div');
+            dot.classList.add('slider-dot');
+            if (index === 0) dot.classList.add('active');
+            dot.onclick = () => showSlide(index);
+            dots.appendChild(dot);
+        });
+
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            document.querySelectorAll('.slider-dot').forEach(dot => dot.classList.remove('active'));
+
+            slides[index].classList.add('active');
+            dots.children[index].classList.add('active');
+            currentSlide = index;
+        }
+
+        function nextSlide() {
+            showSlide((currentSlide + 1) % slides.length);
+        }
+
+        setInterval(nextSlide, 4000);
+
+        showSlide(0);
+
+        function showMedicineInfo(medicineKey) {
+            document.getElementById('searchBox').value = medicineKey;
+            searchTablet();
+        }
+
+        const medicineProcesses = {
+            paracetamol: {
+                title: "Making Paracetamol Magic! 💊",
+                steps: [
+                    { icon: "🧪", text: "Mix special chemicals called para-aminophenol and acetic anhydride" },
+                    { icon: "🌡️", text: "Heat them up carefully until they become one new substance" },
+                    { icon: "❄️", text: "Cool it down to form tiny crystal particles" },
+                    { icon: "✨", text: "Clean the crystals to make them super pure" },
+                    { icon: "✨", text: "Press the powder into tablets with special machines" }
+                ]
+            },
+            vitamin_c: {
+                title: "Creating Vitamin C Power! 🍊",
+                steps: [
+                    { icon: "🌾", text: "Start with glucose from corn or wheat" },
+                    { icon: "🦠", text: "Use friendly bacteria to transform glucose" },
+                    { icon: "⚗️", text: "Add special chemicals to make ascorbic acid (Vitamin C)" },
+                    { icon: "🧪", text: "Clean and purify the vitamin C crystals" },
+                    { icon: "🍬", text: "Make them into tasty chewable tablets" }
+                ]
+            },
+            zinc: {
+                title: "Zinc Power Production! ⚡",
+                steps: [
+                    { icon: "⛰️", text: "Find zinc in special rocks called zinc ore" },
+                    { icon: "🔥", text: "Heat the ore to get pure zinc" },
+                    { icon: "🧪", text: "Mix zinc with other helpful minerals" },
+                    { icon: "💧", text: "Dissolve in liquid to make it easy to absorb" },
+                    { icon: "💊", text: "Form into tablets or capsules" }
+                ]
+            },
+            probiotics: {
+                title: "Growing Friendly Bacteria! 🦠",
+                steps: [
+                    { icon: "🥛", text: "Start with special healthy bacteria cultures" },
+                    { icon: "🌡️", text: "Give them food and warmth to grow strong" },
+                    { icon: "❄️", text: "Freeze-dry them to make them sleep" },
+                    { icon: "🔍", text: "Check that we have enough friendly bacteria" },
+                    { icon: "💊", text: "Put them in special capsules that protect them" }
+                ]
+            },
+            iron: {
+                title: "Creating Iron Power! 💪",
+                steps: [
+                    { icon: "⛰️", text: "Find iron in special rocks from the earth" },
+                    { icon: "🔥", text: "Heat the rocks to get pure iron" },
+                    { icon: "🧪", text: "Mix with special ingredients to make it easy for your body to use" },
+                    { icon: "⚡", text: "Add vitamin C to make it work better" },
+                    { icon: "💊", text: "Form into tablets or make into liquid" }
+                ]
+            },
+            calcium: {
+                title: "Building Bone Strength! 🦴",
+                steps: [
+                    { icon: "🗻", text: "Find calcium in special minerals like limestone" },
+                    { icon: "⚗️", text: "Clean and purify the calcium" },
+                    { icon: "🔮", text: "Mix with vitamin D to make it super strong" },
+                    { icon: "🍬", text: "Add flavors to make it taste yummy" },
+                    { icon: "💊", text: "Make into chewable tablets" }
+                ]
+            },
+            multivitamin: {
+                title: "Making Rainbow Power! 🌈",
+                steps: [
+                    { icon: "🎨", text: "Gather different vitamins and minerals" },
+                    { icon: "🔄", text: "Mix them in the right amounts" },
+                    { icon: "🎯", text: "Make sure they all work together nicely" },
+                    { icon: "🍭", text: "Add special coating for nice taste" },
+                    { icon: "💊", text: "Press into colorful tablets" }
+                ]
+            },
+            omega3: {
+                title: "Catching Brain Food! 🐟",
+                steps: [
+                    { icon: "🌊", text: "Get oil from special fish that swim in cold oceans" },
+                    { icon: "✨", text: "Clean the oil to make it super pure" },
+                    { icon: "✨", text: "Remove any fishy smell" },
+                    { icon: "🛡️", text: "Add protection to keep it fresh" },
+                    { icon: "💊", text: "Put into soft, easy-to-swallow capsules" }
+                ]
+            },
+            vitamin_d: {
+                title: "Bottling Sunshine! ☀️",
+                steps: [
+                    { icon: "🌞", text: "Start with special oils that can catch sunshine power" },
+                    { icon: "⚡", text: "Use UV light to make vitamin D" },
+                    { icon: "🧪", text: "Test to make sure it's the right strength" },
+                    { icon: "🔄", text: "Mix with helpful oils" },
+                    { icon: "💊", text: "Put into tiny sunshine capsules" }
+                ]
+            },
+            magnesium: {
+                title: "Creating Calm Crystals! 😌",
+                steps: [
+                    { icon: "🌊", text: "Find magnesium in sea water or special rocks" },
+                    { icon: "✨", text: "Clean it until it's pure and sparkly" },
+                    { icon: "🧪", text: "Mix with other minerals to help it work better" },
+                    { icon: "💫", text: "Make it easy for your body to use" },
+                    { icon: "💊", text: "Form into relaxing tablets" }
+                ]
+            }
+        };
+
+        function showProcess(medicine) {
+            const processDiv = document.getElementById('medicineProcesses');
+            const process = medicineProcesses[medicine];
+
+            // Update active button - Fix for special cases
+            document.querySelectorAll('.process-btn').forEach(btn => {
+                btn.classList.remove('active');
+                // Handle special cases with normalized text comparison
+                const buttonText = btn.textContent.toLowerCase().replace(/[-\s]/g, '');
+                const medicineText = medicine.toLowerCase().replace(/[_\s]/g, '');
+                if (buttonText === medicineText) {
+                    btn.classList.add('active');
+                }
+            });
+
+            let html = `
+                <h3>${process.title}</h3>
+                <div class="process-steps">
+            `;
+
+            process.steps.forEach((step, index) => {
+                html += `
+                    <div class="process-step-special">
+                        <div class="step-icon">${step.icon}</div>
+                        <div class="step-content">
+                            <strong>Step ${index + 1}:</strong> ${step.text}
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            processDiv.innerHTML = html;
+        }
+
+        // Show paracetamol process by default
+        showProcess('paracetamol');
+
+        function showHeroPower(type) {
+            const animationDiv = document.getElementById('heroAnimation');
+            switch (type) {
+                case 'immune':
+                    animationDiv.innerHTML = `
+                        <div class="animation-content">
+                            <h3>🛡️ Immune System Heroes in Action!</h3>
+                            <p>Watch as your white blood cells chase and catch bad germs!</p>
+                            <!-- Add actual animation here -->
+                        </div>
+                    `;
+                    break;
+                case 'digestion':
+                    animationDiv.innerHTML = `
+                        <div class="animation-content">
+                            <h3>🍎 Digestion Heroes at Work!</h3>
+                            <p>See how your body turns food into energy!</p>
+                            <!-- Add actual animation here -->
+                        </div>
+                    `;
+                    break;
+                case 'healing':
+                    animationDiv.innerHTML = `
+                        <div class="animation-content">
+                            <h3>🩹 Amazing Healing Powers!</h3>
+                            <p>Watch your body's incredible healing process!</p>
+                            <!-- Add actual animation here -->
+                        </div>
+                    `;
+                    break;
+            }
+        }
+
+        // Update the home page Body Heroes card to link to the new section
+        document.querySelector('.feature-card:nth-child(4)').onclick = function () {
+            showSection('bodyheroes');
+        };
+    </script>
+</body>
+
+</html>
